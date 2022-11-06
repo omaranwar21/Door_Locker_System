@@ -1,0 +1,54 @@
+/*
+ * HMI_ECU.h
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+
+#ifndef HMI_ECU_H_
+#define HMI_ECU_H_
+
+#include "common_macros.h"
+#include "keypad.h"
+#include "lcd.h"
+#include "std_types.h"
+#include "timer1.h"
+#include "uart.h"
+#include <util/delay.h>
+#include <avr/interrupt.h>
+#include <avr/io.h>
+
+typedef enum{
+	HMI_FIRST_PASS = 1, HMI_SECOND_PASS, HMI_CHECK_PASS,
+	HMI_ERROR_ACTION, HMI_OPEN_ACTION
+}HMI_mesages;
+
+#define PASS_SIZE		5
+#define ENTER_BUTTON	'='
+#define KEYPAD_DELAY	500
+#define MICRO_READY		0x10
+#define HMI_TRIALS		3
+
+void HMI_creatPass(void);
+
+void HMI_options(void);
+
+void HMI_openDoor(void);
+
+void HMI_changePass(void);
+
+void HMI_enterPassDisplay(void);
+
+void HMI_getPass(uint8*pass);
+
+void HMI_Ready(void);
+
+uint8 HMI_passCheching(void);
+
+void HMI_ErrorAction(void);
+
+void HMI_Stuck(void);
+
+void HMI_openAction(void);
+
+#endif /* HMI_ECU_H_ */

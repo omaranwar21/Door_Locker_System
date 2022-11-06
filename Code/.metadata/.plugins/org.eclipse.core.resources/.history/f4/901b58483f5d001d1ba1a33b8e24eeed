@@ -1,0 +1,48 @@
+/*
+ * Functions.c
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+#include "CNTRL_ECU.h"
+#include <avr/io.h>
+#include "gpio.h"
+
+
+UART_ConfigType CNTRL_UART = {
+		UART_BitData_8,
+		UART_Parity_DISABLED,
+		UART_StopBit_1,
+		UART_BaudRate_RATE_9600
+};
+
+void CNTRL_createPass(void){
+	uint8 firstPass[PASS_SIZE];
+	uint8 secondPass[PASS_SIZE];
+	uint8 test;
+	UART_init(&CNTRL_UART);
+
+	UART_sendByte(MICRO_READY);
+	UART_receiveString(firstPass);
+
+	UART_sendByte(MICRO_READY);
+	UART_receiveString(secondPass);
+
+	test = CNTRL_isCorrect(firstPass, secondPass);
+
+	GPIO_setupPinDirection(PORTC, PORTC3, PIN_OUTPUT);
+	if (test) {
+		GPIO_writePin(PORTC, PORTC2, LOGIC_HIGH);
+	}
+}
+
+
+uint8 CNTRL_isCorrect(uint8* pass1, uint8* pass2){
+	uint8 loop1, loop2;
+	for (loop1 = 0, loop2 = 0; loop1 < PASS_SIZE && loop2 < PASS_SIZE ; loop1++, loop2++) {
+		if (pass1[loop1] != pass2[loop2]) {
+			return 0;
+		}
+	}
+		return 1;
+}

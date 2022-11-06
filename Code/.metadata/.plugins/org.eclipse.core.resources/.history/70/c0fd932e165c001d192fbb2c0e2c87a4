@@ -1,0 +1,29 @@
+/*
+ * test_HMI.c
+ *
+ *  Created on: Nov 3, 2022
+ *      Author: Anwar
+ */
+#include "std_types.h"
+#include "lcd.h"
+#include "gpio.h"
+#include "common_macros.h"
+#include <util/delay.h>
+
+int main(int argc, char **argv) {
+	uint8 count = 0;
+	LCD_init();
+//	LCD_displayString("Plz enter pass:");
+	Buzzer_init();
+	while(1){
+		Buzzer_on();
+		_delay_ms(500);
+		Buzzer_off();
+		_delay_ms(500);
+		count = KEYPAD_getPressedKey();
+
+//		LCD_moveCursor(1, 16);
+		LCD_intgerToString(count);
+
+	}
+}

@@ -1,0 +1,116 @@
+/*
+ * Functions.c
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+#include "CNTRL_ECU.h"
+
+UART_ConfigType CNTRL_UART = {
+		UART_BitData_8,
+		UART_Parity_DISABLED,
+		UART_StopBit_1,
+		UART_BaudRate_RATE_9600
+};
+
+TWI_ConfigType CNTRL_TWI = {
+		TWI_ADDRESS_SLAVE,
+		TWI_BaudRate_FAST
+};
+
+void CNTRL_createPass(void){
+	uint8 firstPass[PASS_SIZE];
+	uint8 secondPass[PASS_SIZE];
+	uint8 receivedPass[PASS_SIZE];
+	uint8 correct;
+//	uint8 passIsTrue;
+	uint8 message;
+
+	UART_init(&CNTRL_UART);
+	TWI_init(&CNTRL_TWI);
+
+	while(1){
+
+		CNTRL_Ready();
+
+		message = UART_recieveByte();
+
+
+		switch (message) {
+		case CNTRL_FIRST_PASS:
+			UART_sendByte(MICRO_READY);
+			UART_receiveString(firstPass);
+			UART_sendByte(MICRO_READY);
+			break;
+
+		case CNTRL_SECOND_PASS:
+			UART_sendByte(MICRO_READY);
+			UART_receiveString(secondPass);
+			correct = CNTRL_isCorrect(firstPass, secondPass);
+			if (correct) {
+				CNTRL_savePass(firstPass);
+			}
+			UART_sendByte(MICRO_READY);
+			UART_sendByte(correct);
+			break;
+
+		case CNTRL_CHECK_PASS:
+			UART_sendByte(MICRO_READY);
+			UART_receiveString(receivedPass);
+			correct = CNTRL_compareSavedPass(receivedPass);
+
+			UART_sendByte(MICRO_READY);
+			UART_sendByte(correct);
+			break;
+//		case CNTRL_FIRST_PASS:
+//			UART_sendByte(MICRO_READY);
+//			UART_receiveString(firstPass);
+//			break;
+//		default:
+//			break;
+		}
+	}
+}
+
+void CNTRL_Ready(void){
+
+	while(UART_recieveByte() != MICRO_READY);
+	UART_sendByte(MICRO_READY);
+}
+
+uint8 CNTRL_isCorrect(uint8* pass1, uint8* pass2){
+	uint8 loop;
+	for (loop = 0; loop < PASS_SIZE; loop++) {
+		if (pass1[loop] != pass2[loop]) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+void CNTRL_savePass(uint8* pass){
+	uint8 loop;
+	for (loop = 0; loop < PASS_SIZE; ++loop) {
+		EEPROM_writeByte(0X031+loop, pass[loop]);
+	}
+}
+
+
+uint8 CNTRL_compareSavedPass(uint8* pass){
+	uint8 loop;
+	uint8 test;
+	uint8 data;
+
+	for (loop = 0; loop < PASS_SIZE; ++loop) {
+
+		EEPROM_readByte(0x031+loop, &data);
+		if (pass[loop] != data) {
+			return 0;
+		}
+	}
+
+//	test = CNTRL_isCorrect(pass, data);
+//
+//	return test;
+	return 1;
+}

@@ -1,0 +1,41 @@
+/*
+ * HMI_ECU.c
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+
+#include "HMI_ECU.h"
+
+void HMI_creatPass(void){
+	uint8* pass[PASS_SIZE];
+	uint8 loop;
+
+	LCD_init();
+
+	LCD_displayString("Plz enter pass:");
+	LCD_moveCursor(1, 0);
+
+	for (loop = 0; loop < PASS_SIZE; ++loop) {
+		pass[loop] =KEYPAD_getPressedKey();
+		_delay_ms(200);
+		LCD_displayCharacter('*');
+	}
+
+	while(KEYPAD_getPressedKey() != ENTER_BUTTON);
+	LCD_clearScreen();
+	LCD_displayString("Plz re-enter the ");
+	LCD_moveCursor(1, 0);
+	LCD_displayString("same pass: ");
+
+	for (loop = 0; loop < PASS_SIZE; ++loop) {
+		pass[loop] =KEYPAD_getPressedKey();
+		_delay_ms(200);
+		LCD_displayCharacter('*');
+	}
+
+	while(KEYPAD_getPressedKey() != ENTER_BUTTON);
+
+}
+
+

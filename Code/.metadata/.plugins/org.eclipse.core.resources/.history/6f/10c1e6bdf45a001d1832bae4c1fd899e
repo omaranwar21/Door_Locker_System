@@ -1,0 +1,24 @@
+/*
+ * test.c
+ *
+ *  Created on: Nov 2, 2022
+ *      Author: Anwar
+ */
+#include "twi.h"
+#include "external_eeprom.h"
+#include "gpio.h"
+#include "std_types.h"
+#include "common_macros.h"
+#include "util/delay.h"
+int main(int argc, char **argv) {
+	TWI_init();
+
+	GPIO_setupPinDirection(PORTC_ID, PIN3_ID, PIN_OUTPUT);
+	GPIO_writePin(PORTC_ID, PIN3_ID, LOGIC_LOW);
+
+	EEPROM_writeByte(0x0311, 0x01);
+	_delay_
+
+}
+
+

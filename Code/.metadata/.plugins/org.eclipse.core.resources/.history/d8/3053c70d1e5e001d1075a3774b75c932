@@ -1,0 +1,62 @@
+/*
+ * timer1.c
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+#include <avr/io.h>
+#include "timer1.h"
+#include "common_macros.h"
+#include <avr/interrupt.h>
+#include "lcd.h"
+
+static volatile void (*g_callBackPtr)() = NULL_PTR;
+
+ISR(TIMER1_OVF_vect)
+{
+
+	if(g_callBackPtr != NULL_PTR)
+		{
+			/* Setting the callback function */
+			(*g_callBackPtr)(); /* another method to call the function using pointer to function g_callBackPtr(); */
+		}
+}
+
+ISR(TIMER1_COMPA_vect)
+{
+	LCD_displayCharacter('a');
+	if(g_callBackPtr != NULL_PTR)
+		{
+			/* Setting the callback function */
+			(*g_callBackPtr)(); /* another method to call the function using pointer to function g_callBackPtr(); */
+		}
+}
+
+void Timer1_init(const Timer1_ConfigType * Config_Ptr)
+{
+	TCCR1A = (1<<FOC1A);	//setup the timer 1A settings by enable non-PWM bit
+	TCCR1B = (Config_Ptr->prescaler)|(Config_Ptr->mode<<WGM12);//by enable CTC OR NORMAL MODE mode and frequency PRESCALER
+	OCR1A = Config_Ptr->compare_value;	//make it raise a flag every COMPARE VALUE clock timer which equals one second
+	TCNT1 = Config_Ptr->initial_value;	//make the timer start form the initial value
+	if (Config_Ptr->mode==TIMER1_COMPARE_MODE)
+	{
+		TIMSK |= (1<<OCIE1A );	//enable the bit according to the mode in this timer to make an interrupt
+	}
+	else if (Config_Ptr->mode==TIMER1_NORMAL_MODE)
+	{
+		TIMSK |= (1<<TOIE1);	//enable the bit according to the mode in this timer to make an interrupt
+	}
+}
+void Timer1_deInit(void){
+	/*
+	 * Disable Timer1 intrrupt
+	 */
+	TIMSK &= ~(1<<OCIE1A);
+}
+
+void Timer1_setCallBack(void(*a_ptr)(void)){
+	g_callBackPtr = a_ptr;
+}
+
+
+

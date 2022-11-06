@@ -1,0 +1,49 @@
+/******************************************************************************
+ *
+ * Module: DC Motor
+ *
+ * File Name: dc_motor.c
+ *
+ * Description: Source file for DC Motor driver
+ *
+ * Author: Omar Ahmed Anwar Mansour
+ *
+ *******************************************************************************/
+#include "dc_motor.h" 		/* DC Motor Header file */
+#include "gpio.h" 			/* To use GPIO driver*/
+#include "common_macros.h"  /* To use the macros like SET_BIT */
+#include "pwm.h" 			/* PWM HEADER FILE */
+
+
+void DcMotor_Init(void){
+	/* Enable pinS OF the direction of the rotation of the motor*/
+	GPIO_setupPinDirection(DC_MOTOR_ROTATION_DIRECTION_PORT_ID, DC_MOTOR_ROTATION_DIRECTION_PIN1_ID, PIN_OUTPUT);
+	GPIO_setupPinDirection(DC_MOTOR_ROTATION_DIRECTION_PORT_ID, DC_MOTOR_ROTATION_DIRECTION_PIN2_ID, PIN_OUTPUT);
+
+	/* Initialize the motor with Stop state*/
+	GPIO_writePin(DC_MOTOR_ROTATION_DIRECTION_PORT_ID, DC_MOTOR_ROTATION_DIRECTION_PIN1_ID, (0X01 & STOP));
+	GPIO_writePin(DC_MOTOR_ROTATION_DIRECTION_PORT_ID, DC_MOTOR_ROTATION_DIRECTION_PIN2_ID, ((0X02 & STOP) >> DC_MOTOR_SHOFT_RIGHT_ONE_BIT));
+}
+
+void DcMotor_Rotate(DcMotor_State state,uint8 speed){
+	/* ADJUST THE STATE ACCORDING TO THE STATE PASSED*/
+	GPIO_writePin(DC_MOTOR_ROTATION_DIRECTION_PORT_ID, DC_MOTOR_ROTATION_DIRECTION_PIN1_ID, (0X01 & state));
+	GPIO_writePin(DC_MOTOR_ROTATION_DIRECTION_PORT_ID, DC_MOTOR_ROTATION_DIRECTION_PIN2_ID, ((0X02 & state) >> DC_MOTOR_SHOFT_RIGHT_ONE_BIT));
+
+	/* ADJUST MOTOR SPEED BY ADJUSTING DUTY CYCLE OF TIMER0 IN FAST PWM MODE */
+	PWM_Timer0_Start(speed);
+
+}
+
+void DcMotor_RotateClockWise(void){
+	DcMotor_Rotate(ClockWise, 100);
+}
+
+void DcMotor_RotateAnti_ClockWise(void){
+	DcMotor_Rotate(Anti_ClockWise, 100);
+}
+
+void DcMotor_Stop(void){
+	DcMotor_Rotate(STOP, 0);
+}
+

@@ -1,0 +1,24 @@
+/*
+ * Functions.c
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+#include "CNTRL_ECU.h"
+
+
+UART_ConfigType CNTRL_UART = {
+		UART_BitData_8,
+		UART_Parity_DISABLED,
+		UART_StopBit_1,
+		UART_BaudRate_RATE_9600
+};
+
+void CNTRL_createPass(void){
+	uint8 firstPass[PASS_SIZE];
+	UART_init(&CNTRL_UART);
+
+	UART_sendByte(MICRO_READY);
+
+
+}

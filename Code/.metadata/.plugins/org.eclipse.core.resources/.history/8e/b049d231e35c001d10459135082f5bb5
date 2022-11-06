@@ -1,0 +1,49 @@
+/*
+ * test_HMI.c
+ *
+ *  Created on: Nov 3, 2022
+ *      Author: Anwar
+ */
+#include "std_types.h"
+#include "lcd.h"
+#include "common_macros.h"
+#include "keypad.h"
+#include <util/delay.h>
+#include "timer1.h"
+
+
+Timer1_ConfigType T1 = {
+		0, 15625, TIMER1_PRESCALER_256, TIMER1_COMPARE_MODE
+};
+int main(int argc, char **argv) {
+	unsigned char key;
+	LCD_init();
+
+//	LCD_displayStringRowColumn(0,0,"Challenge");
+//	LCD_displayStringRowColumn(1,0,"Keypad 4x4");
+//	LCD_displayStringRowColumn(2,0,"LCD");
+
+//	LCD_moveCursor(3,0); /* Move the cursor to the second row */
+	Timer1_init(&T1);
+
+    while(1)
+    {
+    	LCD_displayCharacter('A');
+
+    	Timer1_setCallBack(LCD_clearScreen());
+    }
+//    	/* Get the pressed key number, if any switch pressed for more than 500 ms it will considered more than one press */
+//		key = KEYPAD_getPressedKey();
+//
+//		if((key <= 9) && (key >= 0))
+//		{
+//			LCD_intgerToString(key);   /* display the pressed keypad switch */
+//		}
+//		else
+//		{
+//			LCD_displayCharacter(key); /* display the pressed keypad switch */
+//		}
+//
+//		_delay_ms(500); /* Press time */
+//    }
+}

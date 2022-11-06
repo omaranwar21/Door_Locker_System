@@ -1,0 +1,110 @@
+/*
+ * HMI_ECU.c
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+
+#include "HMI_ECU.h"
+
+UART_ConfigType HMI_UART = {
+	UART_BitData_8,
+	UART_Parity_DISABLED,
+	UART_StopBit_1,
+	UART_BaudRate_RATE_9600
+};
+
+void HMI_creatPass(void){
+	uint8 firstPass[PASS_SIZE+1];
+	uint8 secondPass[PASS_SIZE+1];
+	uint8 correct;
+
+	LCD_init();
+	UART_init(&HMI_UART);
+
+	LCD_displayString("Plz enter pass:");
+	LCD_moveCursor(1, 0);
+
+	HMI_getPass(firstPass);
+
+	LCD_clearScreen();
+	LCD_displayString("Plz re-enter the ");
+	LCD_moveCursor(1, 0);
+	LCD_displayString("same pass: ");
+
+	HMI_getPass(secondPass);
+
+	UART_sendByte(MICRO_READY);
+	while(UART_recieveByte() != MICRO_READY);
+	UART_sendString(firstPass);
+
+	while(UART_recieveByte() != MICRO_READY);
+	UART_sendString(secondPass);
+
+	while(UART_recieveByte() != MICRO_READY);
+	correct = UART_recieveByte();
+
+	if (!correct) {
+		LCD_clearScreen();
+		HMI_creatPass();
+	}
+	else {
+		LCD_clearScreen();
+		HMI_options();
+	}
+}
+
+void HMI_options(void){
+	uint8 key = 0;
+	LCD_displayString("+ : Open Door");
+	LCD_moveCursor(1, 0);
+	LCD_displayString("- : Change Pass");
+	key = KEYPAD_getPressedKey();
+	_delay_ms(KEYPAD_DELAY);
+
+	switch (key) {
+		case '+':
+			HMI_openDoor();
+			break;
+		case '-':
+			HMI_changePass();
+			break;
+	}
+}
+
+
+void HMI_openDoor(void){
+
+}
+
+
+void HMI_changePass(void){
+
+}
+
+
+void HMI_enterPass(void){
+	LCD_clearScreen();
+	LCD_displayString("Plz Enter Pass: ");
+	LCD_moveCursor(1, 0);
+}
+
+
+void HMI_getPass(uint8*pass){
+
+	uint8 loop;
+	for (loop = 0; loop < PASS_SIZE; ++loop) {
+		pass[loop] = KEYPAD_getPressedKey();
+		_delay_ms(KEYPAD_DELAY);
+		LCD_displayCharacter('*');
+	}
+
+	while(KEYPAD_getPressedKey() != ENTER_BUTTON);
+	_delay_ms(KEYPAD_DELAY);
+	pass[PASS_SIZE] = '#';
+
+}
+
+
+
+

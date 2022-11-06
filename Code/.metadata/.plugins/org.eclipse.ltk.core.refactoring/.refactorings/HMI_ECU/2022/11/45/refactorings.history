@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;HMI_ECU/bazzer.h&apos; to &apos;buzzer.h&apos;" description="Rename resource &apos;bazzer.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="bazzer.h" name="buzzer.h" stamp="1667429925901" updateReferences="true"/>
+</session>

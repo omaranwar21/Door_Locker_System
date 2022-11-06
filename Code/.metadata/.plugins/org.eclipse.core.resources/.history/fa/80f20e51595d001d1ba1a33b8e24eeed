@@ -1,0 +1,78 @@
+/*
+ * Functions.c
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+#include "CNTRL_ECU.h"
+
+
+UART_ConfigType CNTRL_UART = {
+		UART_BitData_8,
+		UART_Parity_DISABLED,
+		UART_StopBit_1,
+		UART_BaudRate_RATE_9600
+};
+
+void CNTRL_createPass(void){
+	uint8 firstPass[PASS_SIZE];
+	uint8 secondPass[PASS_SIZE];
+	uint8 correct;
+	UART_init(&CNTRL_UART);
+
+	while(UART_recieveByte() != MICRO_READY);
+
+	UART_sendByte(MICRO_READY);
+
+	UART_receiveString(firstPass);
+
+	UART_sendByte(MICRO_READY);
+	UART_receiveString(secondPass);
+
+	correct = CNTRL_isCorrect(firstPass, secondPass);
+
+	if (correct) {
+		CNTRL_savePass(firstPass);
+	}
+
+	UART_sendByte(MICRO_READY);
+	UART_sendByte(correct);
+
+	while(UART_recieveByte() != MICRO_READY);
+	UART_sendByte(MICRO_READY);
+	UART_receiveString(firstPass);
+
+	CNTRL_compareSavedPass(firstPass);
+
+
+}
+
+
+uint8 CNTRL_isCorrect(uint8* pass1, uint8* pass2){
+	uint8 loop1, loop2;
+	for (loop1 = 0, loop2 = 0; loop1 < PASS_SIZE && loop2 < PASS_SIZE ; loop1++, loop2++) {
+		if (pass1[loop1] != pass2[loop2]) {
+			return 0;
+		}
+	}
+		return 1;
+}
+
+void CNTRL_savePass(uint8* pass){
+	uint8 loop;
+	for (loop = 0; loop < PASS_SIZE; ++loop) {
+		EEPROM_writeByte(0X031+loop, pass[loop]);
+	}
+}
+
+
+void CNTRL_compareSavedPass(uint8* pass){
+	uint8 loop;
+	uint8* data;
+	for (loop = 0; loop < PASS_SIZE; ++loop) {
+		EEPROM_readByte(0x031+loop, *data);
+		if (pass[loop] != ) {
+
+		}
+	}
+}

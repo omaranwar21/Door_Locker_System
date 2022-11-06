@@ -1,0 +1,110 @@
+/*
+ * Functions.c
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+#include "CNTRL_ECU.h"
+
+
+
+void CNTRL_createPass(void){
+	uint8 firstPass[PASS_SIZE];
+	uint8 secondPass[PASS_SIZE];
+	uint8 correct;
+	uint8 passIsTrue;
+	uint8 message;
+
+
+
+	CNTRL_Ready();
+
+	message = UART_recieveByte();
+
+
+	switch (message) {
+		case CNTRL_FIRST_PASS:
+			UART_sendByte(MICRO_READY);
+			UART_receiveString(firstPass);
+			break;
+		case CNTRL_SECOND_PASS:
+			UART_sendByte(MICRO_READY);
+			UART_receiveString(secondPass));
+			break;
+		case CNTRL_FIRST_PASS:
+			UART_sendByte(MICRO_READY);
+			UART_receiveString(firstPass);
+			break;
+		case CNTRL_FIRST_PASS:
+			UART_sendByte(MICRO_READY);
+			UART_receiveString(firstPass);
+			break;
+		default:
+			break;
+	}
+
+	UART_receiveString(firstPass);
+
+	UART_sendByte(MICRO_READY);
+	UART_receiveString(secondPass);
+
+	correct = CNTRL_isCorrect(firstPass, secondPass);
+
+	if (correct) {
+		CNTRL_savePass(firstPass);
+	}
+
+	UART_sendByte(MICRO_READY);
+	UART_sendByte(correct);
+
+
+
+	while(UART_recieveByte() != MICRO_READY);
+	UART_sendByte(MICRO_READY);
+	UART_receiveString(firstPass);
+
+	passIsTrue = CNTRL_compareSavedPass(firstPass);
+	UART_sendByte(MICRO_READY);
+	UART_sendByte(passIsTrue);
+
+
+
+
+
+}
+
+void CNTRL_Ready(void){
+
+	while(UART_recieveByte() != MICRO_READY);
+	UART_sendByte(MICRO_READY);
+}
+
+uint8 CNTRL_isCorrect(uint8* pass1, uint8* pass2){
+	uint8 loop1, loop2;
+	for (loop1 = 0, loop2 = 0; loop1 < PASS_SIZE && loop2 < PASS_SIZE ; loop1++, loop2++) {
+		if (pass1[loop1] != pass2[loop2]) {
+			return 0;
+		}
+	}
+		return 1;
+}
+
+void CNTRL_savePass(uint8* pass){
+	uint8 loop;
+	for (loop = 0; loop < PASS_SIZE; ++loop) {
+		EEPROM_writeByte(0X031+loop, pass[loop]);
+	}
+}
+
+
+uint8 CNTRL_compareSavedPass(uint8* pass){
+	uint8 loop;
+	uint8* data;
+	for (loop = 0; loop < PASS_SIZE; ++loop) {
+		EEPROM_readByte(0x031+loop, data);
+		if (pass[loop] != *data) {
+			return 0;
+		}
+	}
+	return 1;
+}

@@ -1,0 +1,26 @@
+/*
+ * controlECU.h
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+
+#ifndef CNTRL_ECU_H_
+#define CNTRL_ECU_H_
+
+#include "twi.h"
+#include "external_eeprom.h"
+#include "std_types.h"
+#include "common_macros.h"
+#include "uart.h"
+
+
+#define PASS_SIZE		5
+#define MICRO_READY		0x10
+
+void CNTRL_createPass(void);
+
+uint8 CNTRL_isCorrect(uint8*, uint8*);
+
+
+#endif /* CNTRL_ECU_H_ */

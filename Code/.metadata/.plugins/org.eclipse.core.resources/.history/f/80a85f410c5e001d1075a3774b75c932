@@ -1,0 +1,17 @@
+/*
+ * test_HMI.c
+ *
+ *  Created on: Nov 3, 2022
+ *      Author: Anwar
+ */
+#include "HMI_ECU.h"
+
+
+Timer1_ConfigType T1 = {
+		0, 15625, TIMER1_PRESCALER_256, TIMER1_COMPARE_MODE
+};
+
+
+int main(int argc, char **argv) {
+	HMI_creatPass();
+}

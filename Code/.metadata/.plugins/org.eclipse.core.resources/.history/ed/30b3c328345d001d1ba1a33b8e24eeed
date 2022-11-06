@@ -1,0 +1,22 @@
+/*
+ * HMI_ECU.h
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+
+#ifndef HMI_ECU_H_
+#define HMI_ECU_H_
+
+#include "lcd.h"
+#include "std_types.h"
+#include "common_macros.h"
+#include "keypad.h"
+#include <util/delay.h>
+
+#define PASS_SIZE		5
+#define ENTER_BUTTON	'='
+
+void HMI_creatPass(void);
+
+#endif /* HMI_ECU_H_ */

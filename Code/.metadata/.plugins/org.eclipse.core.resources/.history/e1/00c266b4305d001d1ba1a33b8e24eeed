@@ -1,0 +1,17 @@
+/*
+ * HMI_ECU.h
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+
+#ifndef HMI_ECU_H_
+#define HMI_ECU_H_
+
+#include "lcd.h"
+
+#define PASS_SIZE		5
+
+void HMI_creatPass(void);
+
+#endif /* HMI_ECU_H_ */

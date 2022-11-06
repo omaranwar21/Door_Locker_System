@@ -1,0 +1,35 @@
+/*
+ * controlECU.h
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+
+#ifndef CNTRL_ECU_H_
+#define CNTRL_ECU_H_
+
+#include "twi.h"
+#include "external_eeprom.h"
+#include "std_types.h"
+#include "common_macros.h"
+#include "uart.h"
+
+typedef enum{
+	CNTRL_FIRST_PASS = 1, CNTRL_SECOND_PASS = 2, CNTRL_CHECK_PASS = 3
+}CNTRL_mesages;
+
+#define PASS_SIZE		5
+#define MICRO_READY		0x10
+
+void CNTRL_createPass(void);
+
+uint8 CNTRL_isCorrect(uint8*, uint8*);
+
+void CNTRL_savePass(uint8* pass);
+
+uint8 CNTRL_compareSavedPass(uint8* pass);
+
+void CNTRL_Ready(void);
+
+
+#endif /* CNTRL_ECU_H_ */

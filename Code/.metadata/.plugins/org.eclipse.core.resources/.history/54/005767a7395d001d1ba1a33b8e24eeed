@@ -1,0 +1,17 @@
+/*
+ * Functions.c
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+
+UART_ConfigType CNTRL_UART = {
+		UART_BitData_8,
+		UART_Parity_DISABLED,
+		UART_StopBit_1,
+		UART_BaudRate_RATE_9600
+};
+
+void CNTRL_createPass(void){
+	UART_
+}

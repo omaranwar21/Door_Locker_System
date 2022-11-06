@@ -1,0 +1,13 @@
+/*
+ * HMI_ECU.h
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+
+#ifndef HMI_ECU_H_
+#define HMI_ECU_H_
+
+#define PASS_SIZE		5
+
+#endif /* HMI_ECU_H_ */

@@ -1,0 +1,17 @@
+/*
+ * controlECU.h
+ *
+ *  Created on: Nov 5, 2022
+ *      Author: Anwar
+ */
+
+#ifndef CONTROLECU_H_
+#define CONTROLECU_H_
+
+#define PASS_SIZE		5
+
+void Create_Pass (void);
+
+
+
+#endif /* CONTROLECU_H_ */
